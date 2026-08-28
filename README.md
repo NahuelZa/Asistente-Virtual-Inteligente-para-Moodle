@@ -35,3 +35,11 @@ moodle-rag-agent/
 | **Base de Datos** | PostgreSQL / MongoDB | Almacenamiento de usuarios, tokens de sesión e historial de conversaciones. |
 | **Integración** | Moodle REST Web Services API | Fuente primaria de datos del campus virtual. |
 | **Despliegue** | Docker, Render / Vercel / Railway | Contenedorización de servicios e infraestructura. |
+
+### 🔄 Flujo de Datos
+
+1. **Frontend:** El usuario envía una consulta en lenguaje natural a través de la interfaz de chat.
+2. **Backend:** Valida la sesión del usuario, gestiona el historial de conversación y orquesta la comunicación con el módulo de IA.
+3. **Agente RAG (IA):** Analiza la consulta y decide de forma autónoma qué herramienta (*Tool*) ejecutar (endpoints de Moodle como `core_enrol_get_users_courses`, `mod_assign_get_assignments`, etc.).
+4. **API de Moodle:** Retorna los datos estructurados solicitados del campus virtual.
+5. **Síntesis y Respuesta:** El Agente RAG procesa la información recibida, construye una respuesta contextualizada en lenguaje claro y la envía al usuario a través del Frontend.
