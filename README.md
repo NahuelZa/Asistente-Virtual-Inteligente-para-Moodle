@@ -43,3 +43,8 @@ moodle-rag-agent/
 3. **Agente RAG (IA):** Analiza la consulta y decide de forma autónoma qué herramienta (*Tool*) ejecutar (endpoints de Moodle como `core_enrol_get_users_courses`, `mod_assign_get_assignments`, etc.).
 4. **API de Moodle:** Retorna los datos estructurados solicitados del campus virtual.
 5. **Síntesis y Respuesta:** El Agente RAG procesa la información recibida, construye una respuesta contextualizada en lenguaje claro y la envía al usuario a través del Frontend.
+
+ 
+👥 Integrantes del Equipo
+[Nahuel Urciuolli Zabala] — GitHub: @NahuelZa
+
