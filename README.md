@@ -24,3 +24,14 @@ moodle-rag-agent/
 ├── backend/          # API Gateway, Autenticación y Persistencia
 ├── agent/            # Módulo de IA (Agente RAG + Integración con API Moodle)
 └── docs/             # Documentación técnica y diagramas de arquitectura
+```
+## 🛠️ Tecnologías Utilizadas
+
+| Capa | Tecnología | Descripción / Rol |
+|---|---|---|
+| **Frontend** | React / Vite, Tailwind CSS | Interfaz web responsiva, chat en tiempo real y formateo Markdown/LaTeX. |
+| **Backend** | Spring Boot (Java) o Node.js / Express | API REST, orquestación de servicios, autenticación y persistencia de chat. |
+| **IA / Agente** | Python, LangChain / DeepAgents / ADK | Módulo de IA, orquestador RAG y definición de *Tools* de la API de Moodle. |
+| **Base de Datos** | PostgreSQL / MongoDB | Almacenamiento de usuarios, tokens de sesión e historial de conversaciones. |
+| **Integración** | Moodle REST Web Services API | Fuente primaria de datos del campus virtual. |
+| **Despliegue** | Docker, Render / Vercel / Railway | Contenedorización de servicios e infraestructura. |
