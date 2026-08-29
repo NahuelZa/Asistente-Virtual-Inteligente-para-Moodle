@@ -18,11 +18,11 @@ Mediante el uso de un **Agente RAG autónomo**, el sistema procesa lenguaje natu
 
 ```mermaid
 flowchart TD
-   subgraph Ingesta [1. Preparar los datos]
-      K[Base de conocimientos] --> P[Procesador de documentos]
-      M[Moodle] --> P
-      P --> V[(Base de datos vectorial)]
-   end
+    subgraph Ingesta [1. Preparar los datos]
+        K[Base de conocimientos] --> P[Procesador de documentos]
+        M[Moodle] --> P
+        P --> V[(Base de datos vectorial)]
+    end
 
     subgraph Runtime [2. Hablar con el usuario]
         U[Usuario] -->|Escribe pregunta| W[Web: chat]
@@ -32,10 +32,12 @@ flowchart TD
         R --> A[Agente y memoria]
         A --> L[Proveedor LLM]
         L --> E
-
+        A -->|Si hace falta utiliza| T[Herramientas externas]
+        T -->|Datos adicionales| A
         E -->|Envía respuesta| W
         W -->|Muestra mensaje| U
     end
+```
 ```
 
 El proyecto está estructurado bajo un patrón de **Monorepo** dividido en tres módulos principales:
