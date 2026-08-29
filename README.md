@@ -45,7 +45,7 @@ moodle-rag-agent/
 5. **Síntesis y Respuesta:** El Agente RAG procesa la información recibida, construye una respuesta contextualizada en lenguaje claro y la envía al usuario a través del Frontend.
 
  
-👥 Integrantes del Equipo
-[Nahuel Urciuolli Zabala] — GitHub: [@NahuelZa](https://github.com/NahuelZa)
-
-
+👥 Integrantes del Equipo  
+[Nahuel Urciuolli Zabala] — GitHub: [@NahuelZa](https://github.com/NahuelZa)  
+[Luciano Joaquín Martínez] — GitHub: [@NahuelZa](https://github.com/lucianomartinez27)  
+[Santiago Rodriguez] — GitHub: [@NahuelZa](https://github.com/Santi-R97)  
