@@ -71,5 +71,5 @@ moodle-rag-agent/
  
 👥 Integrantes del Equipo  
 [Nahuel Urciuolli Zabala] — GitHub: [@NahuelZa](https://github.com/NahuelZa)  
-[Luciano Joaquín Martínez] — GitHub: [@NahuelZa](https://github.com/lucianomartinez27)  
-[Santiago Rodriguez] — GitHub: [@NahuelZa](https://github.com/Santi-R97)  
+[Luciano Joaquín Martínez] — GitHub: [@lucianomartinez27](https://github.com/lucianomartinez27)  
+[Santiago Rodriguez] — GitHub: [@Santi-R9](https://github.com/Santi-R97)  
