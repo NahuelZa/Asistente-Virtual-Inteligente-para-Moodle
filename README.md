@@ -24,17 +24,18 @@ flowchart TD
       P --> V[(Base de datos vectorial)]
    end
 
-   subgraph Runtime [2. Hablar con el usuario]
-      U[Usuario] --> W[Web: chat]
-      W --> E[Servidor]
-      E --> R[Sistema RAG]
+    subgraph Runtime [2. Hablar con el usuario]
+        U[Usuario] -->|Escribe pregunta| W[Web: chat]
+        W -->|HTTP / API| E[Servidor]
+        E --> R[Sistema RAG]
+        R <--> |Busca contexto relevante| V
+        R --> A[Agente y memoria]
+        A --> L[Proveedor LLM]
+        L --> E
 
-      R -->|Busca contexto relevante| V
-
-      R --> A[Agente y memoria]
-      A --> L[Proveedor LLM]
-      L --> E
-   end
+        E -->|Envía respuesta| W
+        W -->|Muestra mensaje| U
+    end
 ```
 
 El proyecto está estructurado bajo un patrón de **Monorepo** dividido en tres módulos principales:
