@@ -16,6 +16,27 @@ Mediante el uso de un **Agente RAG autónomo**, el sistema procesa lenguaje natu
 
 ## 🏗️ Arquitectura del Sistema
 
+```mermaid
+flowchart TD
+   subgraph Ingesta [1. Preparar los datos]
+      K[Base de conocimientos] --> P[Procesador de documentos]
+      M[Moodle] --> P
+      P --> V[(Base de datos vectorial)]
+   end
+
+   subgraph Runtime [2. Hablar con el usuario]
+      U[Usuario] --> W[Web: chat]
+      W --> E[Servidor]
+      E --> R[Sistema RAG]
+
+      R -->|Busca contexto relevante| V
+
+      R --> A[Agente y memoria]
+      A --> L[Proveedor LLM]
+      L --> E
+   end
+```
+
 El proyecto está estructurado bajo un patrón de **Monorepo** dividido en tres módulos principales:
 
 ```text
