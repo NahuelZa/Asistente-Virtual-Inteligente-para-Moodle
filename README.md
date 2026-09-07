@@ -166,7 +166,7 @@ erDiagram
 *   **APIARIOS a COLMENAS (Uno a Muchos - `||--o{`)**: Un lote o apiario puede tener muchas colmenas trabajando en él al mismo tiempo, pero una colmena en un momento específico solo puede pertenecer a un único apiario.
 *   **COLMENAS a INSPECCIONES (Uno a Muchos - `||--o{`)**: Una colmena va a ser revisada muchas veces a lo largo de su vida. Cada revisión genera una nueva fila en la tabla de inspecciones conectada a esa colmena a través de su ID.
 *   **COLMENAS a HISTORIAL\_MOVIMIENTOS (Uno a Muchos - `||--o{`)**: Sirve para auditar el camino de la colmena. Cada vez que una colmena viaja de un apiario a otro, se guarda el registro de dónde venía y a dónde fue, permitiendo reconstruir su ruta en el mapa.
-
+---
  
 👥 Integrantes del Equipo  
 [Nahuel Urciuolli Zabala] — GitHub: [@NahuelZa](https://github.com/NahuelZa)  
