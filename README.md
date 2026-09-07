@@ -43,7 +43,6 @@ El proyecto está estructurado utilizando tecnologías modernas que garantizan p
 ├── NO ──> [ Base de Datos Local (SQLite/Hive) ] (Guarda el UUID de inmediato)│
 └── SÍ ──> [ Base de Datos Local ] ──(Sincronización)──> [ Nube (Firebase/Supabase) ]
 ```
-```
 
 1. **Captura Local Inmediata**: Cualquier acción (crear un lote, registrar una inspección) se guarda primero en la base de datos interna del teléfono de forma instantánea.
 2. **Uso de UUIDs**: Cada registro genera un código único universal en el teléfono. Esto evita que los datos choquen o se dupliquen cuando se suban a internet.
@@ -58,7 +57,7 @@ El código de la aplicación se divide en tres capas principales para separar la
 *   **Capas de Presentación (UI)**: Contiene las pantallas, botones gigantes, el lector de códigos QR y los controladores de la interfaz de usuario. No sabe cómo se guardan los datos, solo los muestra.
 *   **Capa de Dominio (Lógica)**: Define las reglas del negocio de la apicultura (por ejemplo: "una colmena no puede estar en dos lotes a la vez" o "calcular la cantidad de colmenas por apiario").
 *   **Capa de Datos (Data)**: Se encarga de la conexión con el exterior. Maneja la base de datos local (SQLite/Hive) y la lógica de sincronización con las APIs o servicios de la nube (Firebase/Supabase).
-```
+
 ## 🔄 Flujo de Datos Detallado (Casos de Uso)
 ### Caso 1: Alta de un Nuevo Lote (Apiario) con GPS
 
