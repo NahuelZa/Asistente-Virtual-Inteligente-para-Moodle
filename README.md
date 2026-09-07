@@ -81,7 +81,6 @@ Para entender cómo se comporta la aplicación, a continuación se describen los
 ### Caso 2: Inspección de Colmena mediante Código QR (Modo Offline)(**VERIFICAR**)
 
 Este es el flujo más común. El apicultor está en el campo, sin internet, revisando una caja de abejas.
----
 ```text
 [Cámara del Teléfono] ──(1. Escanea QR)──> [Busca ID localmente] ──> [Pantalla de la Colmena]
 │
