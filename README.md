@@ -33,7 +33,9 @@ El proyecto está estructurado utilizando tecnologías modernas que garantizan p
 ### 🔄 Flujo de Datos y Sincronización
 
 ```text
-[ Interfaz de Usuario (App) ]│▼
+[ Interfaz de Usuario (App) ]
+│
+▼
 ┌──────────────────────────────┐
 │    Capa de Repositorio       │
 └────────────┬─────────────────┘
