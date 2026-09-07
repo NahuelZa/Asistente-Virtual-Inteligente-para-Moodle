@@ -32,7 +32,7 @@ El proyecto está estructurado utilizando tecnologías modernas que garantizan p
 
 ### 🔄 Flujo de Datos y Sincronización
 
-```mermaid
+```text
 [ Interfaz de Usuario (App) ]│▼┌──────────────────────────────┐│    Capa de Repositorio       │└────────────┬─────────────────┘│¿Hay Internet?├── NO ──> [ Base de Datos Local (SQLite/Hive) ] (Guarda el UUID de inmediato)│└── SÍ ──> [ Base de Datos Local ] ──(Sincronización)──> [ Nube (Firebase/Supabase) ]
 ```
 ```
@@ -56,7 +56,7 @@ El código de la aplicación se divide en tres capas principales para separar la
 
 Este flujo ocurre cuando el apicultor llega a un terreno nuevo y decide registrarlo como un punto de trabajo.
 Para entender cómo se comporta la aplicación, a continuación se describen los tres flujos de datos más importantes del sistema, cubriendo el ciclo de vida de la información desde el campo hasta la nube.
-```mermaid
+```text
 [Pantalla "Nuevo Lote"] ──(1. Clic Guardar)──> [Servicio GPS del Celular]│(2. Obtiene Coordenadas)│▼[Nube (Firebase/Supabase)] <──(4. Segundo Plano)── [Base de Datos Local](Disponible en la Web)                             (ID: UUID generado)
 ```
 1. **Entrada de datos**: El usuario escribe el nombre (ej. "Lote Las Acacias") y presiona el botón "Registrar Ubicación".
@@ -69,7 +69,7 @@ Para entender cómo se comporta la aplicación, a continuación se describen los
 ### Caso 2: Inspección de Colmena mediante Código QR (Modo Offline)(**VERIFICAR**)
 Este es el flujo más común. El apicultor está en el campo, sin internet, revisando una caja de abejas.
 ---
-```mermaid
+```text
 [Cámara del Teléfono] ──(1. Escanea QR)──> [Busca ID localmente] ──> [Pantalla de la Colmena]│(2. Completa Formulario)│▼[Cola de Sincronización] <──(4. Agrega a cola) <── [Tabla 'Inspecciones' Local]
 ```
 1. **Lectura**: El apicultor apunta la cámara al sticker QR de la colmena. La app traduce el QR en un ID (ej: `colmena-104`) y abre su historial.
@@ -81,7 +81,7 @@ Este es el flujo más común. El apicultor está en el campo, sin internet, revi
 
 ### Caso 3: Recuperación de Conectividad y Sincronización de Datos(**VERIFICAR**)
 Este flujo ocurre de forma invisible cuando el apicultor termina su jornada y regresa a su casa o a una zona con señal celular.
-```mermaid
+```text
 [Red Móvil / Wi-Fi detectado]│▼[Filtra registros donde 'sincronizado == false']│▼[Envía datos en bloques (Batch) a la Nube]│▼[Nube responde OK] ───> [Cambia estado local a 'sincronizado == true']
 ```
 1. **Escucha de Red**: Un "Listener" (oyente) del sistema operativo avisa a la app que el estado de la red cambió a "Conectado".
