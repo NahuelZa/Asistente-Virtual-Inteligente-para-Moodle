@@ -1,60 +1,118 @@
 import './style.css'
-import heroImg from './assets/hero.png'
-import typescriptLogo from './assets/typescript.svg'
-import viteLogo from './assets/vite.svg'
-import { setupCounter } from './counter.ts'
+// Import the functions you need from the SDKs you need
+import { initializeApp, } from "firebase/app";
+import { 
+  initializeFirestore, 
+  persistentLocalCache, 
+  persistentMultipleTabManager,
+  getFirestore,
+  serverTimestamp,
+  addDoc,
+  collection,
+  onSnapshot
+} from "firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${typescriptLogo}" class="framework" alt="TypeScript logo"/>
-    <img src="${viteLogo}" class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.ts</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAiQ5EUpdTgQu2suyiYF5TOTlNwCtLUbzU",
+  authDomain: "beekeep-2bdea.firebaseapp.com",
+  projectId: "beekeep-2bdea",
+  storageBucket: "beekeep-2bdea.firebasestorage.app",
+  messagingSenderId: "337711164964",
+  appId: "1:337711164964:web:e1b9771fe0491c279572b1",
+  measurementId: "G-KLSSKCPFXX"
+};
 
-<div class="ticks"></div>
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src="${viteLogo}" alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://www.typescriptlang.org" target="_blank">
-          <img class="button-icon" src="${typescriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
+// 2. Habilitar la Persistencia Offline en IndexedDB
+let db;
 
-<div class="ticks"></div>
-<section id="spacer"></section>
-`
+try {
+  // Intenta inicializar Firestore con caché persistente en IndexedDB
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager()
+    })
+  });
+} catch (error) {
+  console.warn("No se pudo activar la persistencia offline de IndexedDB:", error , "Se continuará en modo memoria normal. Datos se borraran al cerrar la app");
+  // Si falla la persistencia, inicializa Firestore en modo memoria/normal
+  db = getFirestore(app);
+}
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+export { db };
+
+// Elementos del DOM
+const form = document.getElementById("inspectionForm");
+const statusDiv = document.getElementById("connectionStatus");
+const outputPre = document.getElementById("localOutput");
+
+// Detectar estado de la conexión a nivel de navegador
+window.addEventListener("online", updateNetworkStatus);
+window.addEventListener("offline", updateNetworkStatus);
+
+function updateNetworkStatus() {
+  if (navigator.onLine) {
+    statusDiv.textContent = "🟢 Conectado a Internet";
+    statusDiv.className = "status online";
+  } else {
+    statusDiv.textContent = "🔴 Modo Offline (Modo Avión)";
+    statusDiv.className = "status offline";
+  }
+}
+updateNetworkStatus();
+
+// 3. Guardar inspección (Soportado completamente Offline)
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const colmenaId = document.getElementById("colmenaId").value;
+  const notas = document.getElementById("notas").value;
+
+  const nuevaInspeccion = {
+    colmenaId: colmenaId,
+    userId: "user_test_01", // Hardcodeado por ahora para la prueba
+    notas: notas,
+    fecha: serverTimestamp(),
+    createdAtLocal: new Date().toISOString()
+  };
+
+  try {
+    // Guarda inmediatamente en IndexedDB (incluso sin conexión)
+    const docRef = await addDoc(collection(db, "inspecciones"), nuevaInspeccion);
+    
+    console.log("📝 Documento escrito localmente con ID:", docRef.id);
+    form.reset();
+
+    // Escuchar el estado de sincronización del documento creado
+    escucharEstadoSincronizacion(docRef.id);
+
+  } catch (error) {
+    console.error("Error al guardar la inspección:", error);
+  }
+});
+
+// 4. Verificar la sincronización e idempotencia con la nube
+function escucharEstadoSincronizacion(docId) {
+  const docRef = collection(db, "inspecciones");
+  
+  onSnapshot(docRef, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.doc.id === docId) {
+        // snapshot.metadata.hasPendingWrites determina si el cambio aún vive solo en local
+        const pendienteSincro = change.doc.metadata.hasPendingWrites;
+        
+        outputPre.textContent = JSON.stringify({
+          id: change.doc.id,
+          data: change.doc.data(),
+          estado: pendienteSincro ? "⏳ Guardado solo en Local (Pendiente subir)" : "☁️ Sincronizado en la Nube"
+        }, null, 2);
+      }
+    });
+  });
+}
