@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" class="wa-theme-default wa-brand-orange">
 
 <head>
     <meta charset="UTF-8">
@@ -9,27 +9,59 @@
 
 <body>
 
-    <h2>BeeKeep: Registro de Inspección</h2>
+    <header class="app-header">
+        <h2>
+            <wa-icon name="cubes-stacked"></wa-icon>
+            BeeKeep: Registro de Inspección
+        </h2>
+    </header>
 
-    <div id="connectionStatus" class="status online">Conectado a Internet</div>
+    <wa-callout id="connectionStatus" variant="success" size="s">
+        <wa-icon slot="icon" name="circle-check"></wa-icon>
+        <span id="connectionStatusText">Conectado a Internet</span>
+    </wa-callout>
 
-    <div class="card">
-        <form id="inspectionForm">
-            <label for="colmenaId">Código/ID de Colmena:</label>
-            <input type="text" id="colmenaId" placeholder="Ej: COL-01" required>
+    <wa-card class="card">
+        <h3 slot="header">
+            <wa-icon name="clipboard-list"></wa-icon>
+            Nueva Inspección
+        </h3>
+        <form id="inspectionForm" class="inspection-form">
+            <wa-input
+                id="colmenaId"
+                name="colmenaId"
+                label="Código/ID de Colmena:"
+                placeholder="Ej: COL-01"
+                required
+                with-clear
+            >
+                <wa-icon slot="start" name="hashtag"></wa-icon>
+            </wa-input>
 
-            <label for="notas">Observaciones / Notas:</label>
-            <textarea id="notas" rows="3" placeholder="Ej: Reina presente, reservas de miel óptimas"
-                required></textarea>
+            <wa-textarea
+                id="notas"
+                name="notas"
+                label="Observaciones / Notas:"
+                rows="3"
+                placeholder="Ej: Reina presente, reservas de miel óptimas"
+                required
+            >
+            </wa-textarea>
 
-            <button type="submit">Guardar Inspección</button>
+            <wa-button id="submitBtn" type="submit" variant="brand" appearance="accent">
+                <wa-icon slot="start" name="floppy-disk"></wa-icon>
+                Guardar Inspección
+            </wa-button>
         </form>
-    </div>
+    </wa-card>
 
-    <div class="card">
-        <h3>Último registro guardado localmente:</h3>
+    <wa-card class="card">
+        <h3 slot="header">
+            <wa-icon name="clock-rotate-left"></wa-icon>
+            Último registro guardado localmente:
+        </h3>
         <pre id="localOutput">Esperando registros...</pre>
-    </div>
+    </wa-card>
     
     <script type="module" src="/src/main.ts"></script>
 </body>

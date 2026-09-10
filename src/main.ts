@@ -1,4 +1,14 @@
-import './style.css'
+import './style.css';
+
+// Import Web Awesome components
+import '@awesome.me/webawesome/dist/components/button/button.js';
+import '@awesome.me/webawesome/dist/components/input/input.js';
+import '@awesome.me/webawesome/dist/components/textarea/textarea.js';
+import '@awesome.me/webawesome/dist/components/card/card.js';
+import '@awesome.me/webawesome/dist/components/callout/callout.js';
+import '@awesome.me/webawesome/dist/components/badge/badge.js';
+import '@awesome.me/webawesome/dist/components/icon/icon.js';
+
 import { FirestoreService } from "./services";
 import type { Inspeccion } from "./models/inspeccion.model";
 import { db } from "./config/firebase";
@@ -10,8 +20,11 @@ const inspeccionesService = new FirestoreService<Inspeccion>("inspecciones");
 
 // Elementos del DOM
 const form = document.getElementById("inspectionForm")! as HTMLFormElement;
-const statusDiv = document.getElementById("connectionStatus")!;
+const statusCallout = document.getElementById("connectionStatus");
+const statusText = document.getElementById("connectionStatusText");
+const statusIcon = statusCallout?.querySelector("wa-icon");
 const outputPre = document.getElementById("localOutput")!;
+const submitBtn = document.getElementById("submitBtn");
 
 // Detectar estado de la conexión a nivel de navegador
 window.addEventListener("online", updateNetworkStatus);
@@ -19,11 +32,13 @@ window.addEventListener("offline", updateNetworkStatus);
 
 function updateNetworkStatus() {
   if (navigator.onLine) {
-    statusDiv.textContent = "🟢 Conectado a Internet";
-    statusDiv.className = "status online";
+    if (statusCallout) statusCallout.setAttribute("variant", "success");
+    if (statusIcon) statusIcon.setAttribute("name", "circle-check");
+    if (statusText) statusText.textContent = "Conectado a Internet";
   } else {
-    statusDiv.textContent = "🔴 Modo Offline (Modo Avión)";
-    statusDiv.className = "status offline";
+    if (statusCallout) statusCallout.setAttribute("variant", "danger");
+    if (statusIcon) statusIcon.setAttribute("name", "triangle-exclamation");
+    if (statusText) statusText.textContent = "Modo Offline (Modo Avión)";
   }
 }
 updateNetworkStatus();
@@ -32,12 +47,15 @@ updateNetworkStatus();
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const colmenaIdInput = document.getElementById("colmenaId")! as HTMLInputElement;
-  const notasInput = document.getElementById("notas")! as HTMLTextAreaElement;
+  const colmenaIdInput = document.getElementById("colmenaId") as HTMLInputElement | null;
+  const notasInput = document.getElementById("notas") as HTMLTextAreaElement | null;
 
+  const colmenaId = colmenaIdInput?.value?.trim() || "";
+  const notas = notasInput?.value?.trim() || "";
 
-  const colmenaId = colmenaIdInput.value;
-  const notas = notasInput.value;
+  if (!colmenaId || !notas) {
+    return;
+  }
 
   const nuevaInspeccion: Inspeccion = {
     colmenaId: colmenaId,
@@ -48,6 +66,8 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
+    submitBtn?.setAttribute("loading", "");
+
     // Guarda inmediatamente en IndexedDB a través de la abstracción (incluso sin conexión)
     const docId = await inspeccionesService.create(nuevaInspeccion);
     
@@ -59,6 +79,8 @@ form.addEventListener("submit", async (e) => {
 
   } catch (error) {
     console.error("Error al guardar la inspección:", error);
+  } finally {
+    submitBtn?.removeAttribute("loading");
   }
 });
 
