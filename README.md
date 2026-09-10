@@ -168,7 +168,7 @@ erDiagram
 *   **COLMENAS a HISTORIAL\_MOVIMIENTOS (Uno a Muchos - `||--o{`)**: Sirve para auditar el camino de la colmena. Cada vez que una colmena viaja de un apiario a otro, se guarda el registro de dónde venía y a dónde fue, permitiendo reconstruir su ruta en el mapa.
 ---
 ###Estructura del  Proyecto
-
+```text
 beekeep-pwa/
 ├── public/
 │   ├── favicon.ico
@@ -215,6 +215,7 @@ beekeep-pwa/
 ├── index.html                 # Documento HTML principal
 ├── package.json               # Dependencias y scripts de npm
 └── README.md                  # Documentación del proyecto y entrega
+```
 ---
 
  
