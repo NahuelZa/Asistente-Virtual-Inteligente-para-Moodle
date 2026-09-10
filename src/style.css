@@ -9,16 +9,38 @@
   box-sizing: border-box;
 }
 
+html,
 body {
-  margin: 0 auto;
-  padding: 32px 16px;
-  max-width: 640px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  min-height: 100%;
+  padding: 0;
+  margin: 0;
   font-family: var(--sans);
   background-color: var(--wa-color-surface-default, #f9fafb);
   color: var(--wa-color-text-normal, #374151);
+}
+
+wa-page::part(main-content) {
+  padding: 0;
+}
+
+.app-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.main-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
 
 .app-header h2 {

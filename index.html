@@ -8,60 +8,63 @@
 </head>
 
 <body>
+    <wa-page>
+        <header slot="header" class="app-header">
+            <h2>
+                <wa-icon name="cubes-stacked"></wa-icon>
+                BeeKeep: Registro de Inspección
+            </h2>
+        </header>
 
-    <header class="app-header">
-        <h2>
-            <wa-icon name="cubes-stacked"></wa-icon>
-            BeeKeep: Registro de Inspección
-        </h2>
-    </header>
+        <main class="main-content">
+            <wa-callout id="connectionStatus" variant="success" size="s">
+                <wa-icon slot="icon" name="circle-check"></wa-icon>
+                <span id="connectionStatusText">Conectado a Internet</span>
+            </wa-callout>
 
-    <wa-callout id="connectionStatus" variant="success" size="s">
-        <wa-icon slot="icon" name="circle-check"></wa-icon>
-        <span id="connectionStatusText">Conectado a Internet</span>
-    </wa-callout>
+            <wa-card class="card">
+                <h3 slot="header">
+                    <wa-icon name="clipboard-list"></wa-icon>
+                    Nueva Inspección
+                </h3>
+                <form id="inspectionForm" class="inspection-form">
+                    <wa-input
+                        id="colmenaId"
+                        name="colmenaId"
+                        label="Código/ID de Colmena:"
+                        placeholder="Ej: COL-01"
+                        required
+                        with-clear
+                    >
+                        <wa-icon slot="start" name="hashtag"></wa-icon>
+                    </wa-input>
 
-    <wa-card class="card">
-        <h3 slot="header">
-            <wa-icon name="clipboard-list"></wa-icon>
-            Nueva Inspección
-        </h3>
-        <form id="inspectionForm" class="inspection-form">
-            <wa-input
-                id="colmenaId"
-                name="colmenaId"
-                label="Código/ID de Colmena:"
-                placeholder="Ej: COL-01"
-                required
-                with-clear
-            >
-                <wa-icon slot="start" name="hashtag"></wa-icon>
-            </wa-input>
+                    <wa-textarea
+                        id="notas"
+                        name="notas"
+                        label="Observaciones / Notas:"
+                        rows="3"
+                        placeholder="Ej: Reina presente, reservas de miel óptimas"
+                        required
+                    >
+                    </wa-textarea>
 
-            <wa-textarea
-                id="notas"
-                name="notas"
-                label="Observaciones / Notas:"
-                rows="3"
-                placeholder="Ej: Reina presente, reservas de miel óptimas"
-                required
-            >
-            </wa-textarea>
+                    <wa-button id="submitBtn" type="submit" variant="brand" appearance="accent">
+                        <wa-icon slot="start" name="floppy-disk"></wa-icon>
+                        Guardar Inspección
+                    </wa-button>
+                </form>
+            </wa-card>
 
-            <wa-button id="submitBtn" type="submit" variant="brand" appearance="accent">
-                <wa-icon slot="start" name="floppy-disk"></wa-icon>
-                Guardar Inspección
-            </wa-button>
-        </form>
-    </wa-card>
-
-    <wa-card class="card">
-        <h3 slot="header">
-            <wa-icon name="clock-rotate-left"></wa-icon>
-            Último registro guardado localmente:
-        </h3>
-        <pre id="localOutput">Esperando registros...</pre>
-    </wa-card>
+            <wa-card class="card">
+                <h3 slot="header">
+                    <wa-icon name="clock-rotate-left"></wa-icon>
+                    Último registro guardado localmente:
+                </h3>
+                <pre id="localOutput">Esperando registros...</pre>
+            </wa-card>
+        </main>
+    </wa-page>
     
     <script type="module" src="/src/main.ts"></script>
 </body>
