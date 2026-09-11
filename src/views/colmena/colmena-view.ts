@@ -1,25 +1,22 @@
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { FeedbackController } from "../../controllers";
 import { colmenaService } from "../../services";
 import type { Colmena } from "../../models/colmena.model";
+import type { Apiario } from "../../models/apiario.model";
+import type { DocumentWithId } from "../../services/FirestoreService";
+import { ROUTES } from "../../constants";
+import { dispatchNavigate } from "../../utils";
 
 /**
  * Vista de Alta de Colmena
  */
 @customElement("colmena-view")
-class ColmenaView extends LitElement {
-  static override properties = {
-    loading: { type: Boolean },
-  };
+export class ColmenaView extends LitElement {
+  @property({ type: Array }) apiarios: DocumentWithId<Apiario>[] = [];
+  @state() private loading = false;
 
-  private loading: boolean;
   private feedback = new FeedbackController(this);
-
-  constructor() {
-    super();
-    this.loading = false;
-  }
 
   override createRenderRoot() {
     return this;
@@ -72,17 +69,19 @@ class ColmenaView extends LitElement {
     }
   }
 
+  private navigateToListado(): void {
+    dispatchNavigate(this, ROUTES.LISTADO_COLMENAS);
+  }
+
   override render() {
     return html`
       <form id="form-nueva-colmena" class="beekeep-form" @submit=${this.handleSubmit}>
         <div class="form-group">
           <wa-select id="colmena-apiario" name="apiarioId" placeholder="Seleccione un apiario" required with-clear size="medium">
             <span slot="label" class="field-label">Apiario</span>
-            <wa-option value="Las Acadia">Las Acadia</wa-option>
-            <wa-option value="El Molino 1">El Molino 1</wa-option>
-            <wa-option value="El Molino 2">El Molino 2</wa-option>
-            <wa-option value="La Esperanza">La Esperanza</wa-option>
-            <wa-option value="San Carlos">San Carlos</wa-option>
+            ${(this.apiarios || []).map(
+                (a) => html`<wa-option value=${a.nombre}>${a.nombre}</wa-option>`
+            )}
           </wa-select>
         </div>
 
@@ -104,10 +103,20 @@ class ColmenaView extends LitElement {
           ${this.feedback.render()}
         </div>
 
-        <div class="form-actions">
+        <div class="form-actions" style="display: flex; gap: var(--wa-space-s);">
           <wa-button id="colmena-submit-btn" type="submit" variant="brand" appearance="accent" size="large" class="beekeep-btn-submit" ?loading=${this.loading}>
             <wa-icon slot="start" name="circle-check"></wa-icon>
             Guardar
+          </wa-button>
+          <wa-button
+            id="colmena-cancel-btn"
+            type="button"
+            variant="neutral"
+            appearance="outlined"
+            size="large"
+            @click=${() => this.navigateToListado()}
+          >
+            Volver
           </wa-button>
         </div>
       </form>

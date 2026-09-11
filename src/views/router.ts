@@ -6,8 +6,12 @@ import "@awesome.me/webawesome/dist/components/tab-group/tab-group.js";
 import "@awesome.me/webawesome/dist/components/tab/tab.js";
 import "@awesome.me/webawesome/dist/components/icon/icon.js";
 import {ROUTES, VIEWS, type ViewType} from "../constants";
+import {NAVIGATE_EVENT, type NavigateDetail} from "../utils";
+import {apiarioService} from "../services";
+import {FirestoreController} from "../controllers";
 import "./apiario/apiario-view";
 import "./colmena/colmena-view";
+import "./listado/listado-view";
 
 export type { ViewType };
 
@@ -20,17 +24,18 @@ export class AppRouter extends LitElement {
   };
 
   private currentView: ViewType;
+  private apiariosController = new FirestoreController(this, apiarioService);
 
   constructor() {
     super();
-    this.currentView = VIEWS.APIARIO;
+    this.currentView = VIEWS.LISTADO_APIARIOS;
   }
 
   private router = new Router(this, [
     {
       path: ROUTES.HOME,
-      render: () => html`<apiario-view></apiario-view>`,
-      enter: () => this.setView(VIEWS.APIARIO),
+      render: () => html`<listado-view type="apiarios"></listado-view>`,
+      enter: () => this.setView(VIEWS.LISTADO_APIARIOS),
     },
     {
       path: ROUTES.APIARIO,
@@ -39,19 +44,59 @@ export class AppRouter extends LitElement {
     },
     {
       path: ROUTES.COLMENA,
-      render: () => html`<colmena-view></colmena-view>`,
-      enter: () => this.setView(VIEWS.COLMENA),
+      render: () => html`<colmena-view .apiarios=${this.apiariosController.value}></colmena-view>`,
+      enter: () => {
+        void this.apiariosController.load();
+        return this.setView(VIEWS.COLMENA);
+      },
     },
     {
-      path: ROUTES.COLMENAS,
-      render: () => html`<colmena-view></colmena-view>`,
-      enter: () => this.setView(VIEWS.COLMENA),
+      path: ROUTES.LISTADO_APIARIOS,
+      render: () => html`<listado-view type="apiarios"></listado-view>`,
+      enter: () => this.setView(VIEWS.LISTADO_APIARIOS),
+    },
+    {
+      path: ROUTES.LISTADO_COLMENAS,
+      render: () => html`<listado-view type="colmenas"></listado-view>`,
+      enter: () => this.setView(VIEWS.LISTADO_COLMENAS),
+    },
+    {
+      path: ROUTES.LISTADO,
+      render: () => html`<listado-view type="apiarios"></listado-view>`,
+      enter: () => this.setView(VIEWS.LISTADO_APIARIOS),
+    },
+    {
+      path: "/listado-apiarios",
+      render: () => html`<listado-view type="apiarios"></listado-view>`,
+      enter: () => this.setView(VIEWS.LISTADO_APIARIOS),
+    },
+    {
+      path: "/listado-colmenas",
+      render: () => html`<listado-view type="colmenas"></listado-view>`,
+      enter: () => this.setView(VIEWS.LISTADO_COLMENAS),
     },
   ]);
 
   override createRenderRoot() {
     return this;
   }
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener(NAVIGATE_EVENT, this.handleNavigateEvent as EventListener);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener(NAVIGATE_EVENT, this.handleNavigateEvent as EventListener);
+  }
+
+  private handleNavigateEvent = (e: CustomEvent<NavigateDetail>) => {
+    e.stopPropagation();
+    if (e.detail?.path) {
+      void this.navigate(e.detail.path);
+    }
+  };
 
   private setView(view: ViewType): boolean {
     this.currentView = view;
@@ -73,15 +118,15 @@ export class AppRouter extends LitElement {
     return html`
       <wa-page>
         <header slot="header" class="view-header">
-          <h1 class="view-title" id="${(this.getCurrentView())}-view-title">
-            ${this.isCurrentViewColmena() ? "Nueva colmena" : "Nuevo apiario"}
+          <h1 class="view-title" id="${this.currentView}-view-title">
+            ${this.getViewTitle()}
           </h1>
 
           <nav class="view-nav-wrapper" aria-label="Selector de vistas">
             <wa-tab-group
               id="view-switcher"
               class="view-switcher-tabs"
-              active=${this.getCurrentView()}
+              active=${this.currentView}
               @wa-tab-show=${(e: CustomEvent<{ name: string }>) => {
                 const target = e.detail?.name;
                 void this.navigate(target);
@@ -89,23 +134,23 @@ export class AppRouter extends LitElement {
             >
               <wa-tab
                 slot="nav"
-                panel=${VIEWS.APIARIO}
-                id="tab-apiario"
-                ?active=${!this.isCurrentViewColmena()}
-                @click=${() => this.navigate(ROUTES.APIARIO)}
+                panel=${VIEWS.LISTADO_APIARIOS}
+                id="tab-apiarios"
+                ?active=${this.currentView === VIEWS.LISTADO_APIARIOS}
+                @click=${() => this.navigate(ROUTES.LISTADO_APIARIOS)}
               >
                 <wa-icon name="cubes-stacked"></wa-icon>
-                <span>Nuevo Apiario</span>
+                <span>Apiarios</span>
               </wa-tab>
               <wa-tab
                 slot="nav"
-                panel=${VIEWS.COLMENA}
-                id="tab-colmena"
-                ?active=${this.isCurrentViewColmena()}
-                @click=${() => this.navigate(ROUTES.COLMENA)}
+                panel=${VIEWS.LISTADO_COLMENAS}
+                id="tab-colmenas"
+                ?active=${this.currentView === VIEWS.LISTADO_COLMENAS}
+                @click=${() => this.navigate(ROUTES.LISTADO_COLMENAS)}
               >
                 <wa-icon name="cube"></wa-icon>
-                <span>Nueva Colmena</span>
+                <span>Colmenas</span>
               </wa-tab>
             </wa-tab-group>
           </nav>
@@ -118,12 +163,18 @@ export class AppRouter extends LitElement {
     `;
   }
 
-  private isCurrentViewColmena() {
-    return this.currentView === VIEWS.COLMENA;
-  }
-
-  private getCurrentView() {
-    return this.isCurrentViewColmena() ? VIEWS.COLMENA : VIEWS.APIARIO;
+  private getViewTitle() {
+    switch (this.currentView) {
+      case VIEWS.APIARIO:
+        return "Nuevo apiario";
+      case VIEWS.COLMENA:
+        return "Nueva colmena";
+      case VIEWS.LISTADO_COLMENAS:
+        return "Colmenas";
+      case VIEWS.LISTADO_APIARIOS:
+      default:
+        return "Apiarios";
+    }
   }
 }
 

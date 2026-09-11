@@ -2,27 +2,22 @@ import {
   collection,
   doc,
   addDoc,
-  onSnapshot,
+  deleteDoc,
+  getDocs,
   serverTimestamp,
   type Firestore,
   type CollectionReference,
   type DocumentReference,
   type DocumentData,
-  type Unsubscribe,
   type WithFieldValue
 } from "firebase/firestore";
 import { db as defaultDb } from "../config/firebase";
-
-export interface FirestoreDocumentMetadata {
-  hasPendingWrites: boolean;
-  fromCache: boolean;
-}
 
 export type DocumentWithId<T> = T & { id: string };
 
 /**
  * Clase genérica para abstraer y encapsular el acceso y operaciones con colecciones de Cloud Firestore.
- * Proporciona métodos CRUD fuertemente tipados, consultas parametrizadas y suscripciones en tiempo real.
+ * Proporciona métodos CRUD y operaciones de consulta.
  */
 export class FirestoreService<T extends DocumentData = DocumentData> {
   protected readonly firestore: Firestore;
@@ -62,42 +57,25 @@ export class FirestoreService<T extends DocumentData = DocumentData> {
   }
 
   /**
-   * Escucha cambios en tiempo real en un documento específico.
-   * @param id Identificador del documento.
-   * @param callback Función invocada en cada cambio con los datos y los metadatos (ej. sincronización offline).
-   * @param onError Callback opcional en caso de error.
-   * @returns Función para cancelar la suscripción.
+   * Elimina un documento específico por su ID.
+   * @param id Identificador del documento a eliminar.
    */
-  public listenById(
-    id: string,
-    callback: (data: DocumentWithId<T> | null, metadata: FirestoreDocumentMetadata) => void,
-    onError?: (error: Error) => void
-  ): Unsubscribe {
+  public async delete(id: string): Promise<void> {
     const docRef = this.getDocRef(id);
+    await deleteDoc(docRef);
+  }
 
-    return onSnapshot(
-      docRef,
-      { includeMetadataChanges: true },
-      (snapshot) => {
-        const metadata: FirestoreDocumentMetadata = {
-          hasPendingWrites: snapshot.metadata.hasPendingWrites,
-          fromCache: snapshot.metadata.fromCache
-        };
-
-        if (!snapshot.exists()) {
-          callback(null, metadata);
-          return;
-        }
-
-        const data: DocumentWithId<T> = {
-          ...(snapshot.data() as T),
-          id: snapshot.id
-        };
-
-        callback(data, metadata);
-      },
-      onError
-    );
+  /**
+   * Obtiene todos los documentos de la colección.
+   * @returns Lista de documentos con sus respectivos IDs.
+   */
+  public async getAll(): Promise<DocumentWithId<T>[]> {
+    const colRef = this.getCollectionRef();
+    const snapshot = await getDocs(colRef);
+    return snapshot.docs.map((docSnap) => ({
+      ...(docSnap.data() as T),
+      id: docSnap.id
+    }));
   }
 
   // Utilidades estáticas de Firestore

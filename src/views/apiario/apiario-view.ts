@@ -3,6 +3,8 @@ import { FeedbackController } from "../../controllers";
 import { customElement } from "lit/decorators.js";
 import { apiarioService } from "../../services";
 import type { Apiario } from "../../models/apiario.model";
+import { ROUTES } from "../../constants";
+import { dispatchNavigate } from "../../utils";
 
 /**
  * Vista de Alta de Apiario
@@ -60,6 +62,10 @@ class ApiarioView extends LitElement {
     }
   }
 
+  private navigateToListado(): void {
+    dispatchNavigate(this, ROUTES.LISTADO_APIARIOS);
+  }
+
   override render() {
     return html`
       <form id="form-nuevo-apiario" class="beekeep-form" @submit=${this.handleSubmit}>
@@ -73,7 +79,7 @@ class ApiarioView extends LitElement {
             size="medium"
           >
             <span slot="label" class="field-label">
-              Nombre del apiario<span class="required-star">*</span>
+              Nombre del apiario
             </span>
           </wa-input>
         </div>
@@ -106,7 +112,7 @@ class ApiarioView extends LitElement {
           ${this.feedback.render()}
         </div>
 
-        <div class="form-actions">
+        <div class="form-actions" style="display: flex; gap: var(--wa-space-s);">
           <wa-button
             id="apiario-submit-btn"
             type="submit"
@@ -118,6 +124,16 @@ class ApiarioView extends LitElement {
           >
             <wa-icon slot="start" name="circle-plus"></wa-icon>
             Crear apiario
+          </wa-button>
+          <wa-button
+            id="apiario-cancel-btn"
+            type="button"
+            variant="neutral"
+            appearance="outlined"
+            size="large"
+            @click=${() => this.navigateToListado()}
+          >
+            Volver
           </wa-button>
         </div>
       </form>
