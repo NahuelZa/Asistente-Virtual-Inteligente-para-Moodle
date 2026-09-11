@@ -117,15 +117,22 @@ export class AppRouter extends LitElement {
   override render() {
     return html`
       <wa-page>
-        <header slot="header" class="view-header">
-          <h1 class="view-title" id="${this.currentView}-view-title">
+        <header
+          slot="header"
+          class="wa-stack wa-gap- view-header"
+        >
+          <h1
+            class="wa-heading-xl wa-font-weight-bold"
+            id="${this.currentView}-view-title"
+            style="margin: 0;"
+          >
             ${this.getViewTitle()}
           </h1>
 
-          <nav class="view-nav-wrapper" aria-label="Selector de vistas">
+          <nav aria-label="Selector de vistas" style="width: 100%;">
             <wa-tab-group
               id="view-switcher"
-              class="view-switcher-tabs"
+              style="--indicator-color: var(--wa-color-brand-fill-loud); --track-color: transparent; width: 100%;"
               active=${this.currentView}
               @wa-tab-show=${(e: CustomEvent<{ name: string }>) => {
                 const target = e.detail?.name;
@@ -136,27 +143,32 @@ export class AppRouter extends LitElement {
                 slot="nav"
                 panel=${VIEWS.LISTADO_APIARIOS}
                 id="tab-apiarios"
+                class="wa-font-weight-semibold"
                 ?active=${this.currentView === VIEWS.LISTADO_APIARIOS}
                 @click=${() => this.navigate(ROUTES.LISTADO_APIARIOS)}
               >
-                <wa-icon name="cubes-stacked"></wa-icon>
+                <wa-icon name="cubes-stacked" style="margin-right: var(--wa-space-xs);"></wa-icon>
                 <span>Apiarios</span>
               </wa-tab>
               <wa-tab
                 slot="nav"
                 panel=${VIEWS.LISTADO_COLMENAS}
                 id="tab-colmenas"
+                class="wa-font-weight-semibold"
                 ?active=${this.currentView === VIEWS.LISTADO_COLMENAS}
                 @click=${() => this.navigate(ROUTES.LISTADO_COLMENAS)}
               >
-                <wa-icon name="cube"></wa-icon>
+                <wa-icon name="cube" style="margin-right: var(--wa-space-xs);"></wa-icon>
                 <span>Colmenas</span>
               </wa-tab>
             </wa-tab-group>
           </nav>
         </header>
 
-        <main class="view-body" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+        <main
+          class="wa-stack wa-align-items-center"
+          style="padding: var(--wa-space-xl) var(--wa-space-l); width: 100%; flex: 1;"
+        >
           ${this.router.outlet()}
         </main>
       </wa-page>

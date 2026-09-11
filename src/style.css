@@ -29,7 +29,6 @@ wa-page {
   min-height: 100vh;
   width: 100%;
 }
-
 /* Header & View Switcher */
 .view-header {
   background-color: var(--wa-color-surface-lowered, #EAEBED);
@@ -39,35 +38,7 @@ wa-page {
   flex-direction: column;
   gap: var(--wa-space-m);
 }
-
-.view-title {
-  margin: 0;
-  font-size: var(--wa-font-size-xl, 1.25rem);
-  font-weight: var(--wa-font-weight-bold, 700);
-}
-
-.view-switcher-tabs {
-  --indicator-color: var(--wa-color-brand-fill-loud);
-  --track-color: transparent;
-  width: 100%;
-}
-
-.view-switcher-tabs wa-tab {
-  font-weight: var(--wa-font-weight-semibold, 600);
-}
-
-.view-switcher-tabs wa-tab wa-icon {
-  margin-right: var(--wa-space-xs, 6px);
-}
-
-/* View Content & Form Layout */
-.view-body {
-  padding: var(--wa-space-xl) var(--wa-space-l);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
+/* View Content */
 apiario-view,
 colmena-view,
 listado-view {
@@ -75,23 +46,7 @@ listado-view {
   max-width: 600px;
 }
 
-.beekeep-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--wa-space-l);
-  width: 100%;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.field-label {
-  font-size: var(--wa-font-size-s, 0.92rem);
-  font-weight: var(--wa-font-weight-semibold, 600);
-}
+/*  Form Layout */
 
 .form-actions {
   margin-top: var(--wa-space-xs);
