@@ -6,16 +6,16 @@
 
 **BeeKeep** es (**VERIFICAR**) diseñada específicamente para apicultores que necesitan llevar un control estricto de sus apiarios y colmenas directamente en el campo. El proyecto nace para resolver un problema crítico en la industria: la falta de conectividad y la organizacion en las zonas rurales donde se encuentran los colmenares.
 
-A diferencia de los cuadernos de papel que se mojan o se pierden, o de las apps tradicionales que requieren internet permanente, **BeeKeep** funciona bajo la filosofía *Offline-First*. Permite registrar de manera ágil el estado de los lotes, inspeccionar colmenas y guardar notas de voz, sincronizando toda la información de forma automática con la nube cuando el dispositivo recupera la señal.
+A diferencia de los cuadernos de papel que se mojan o se pierden, o de las apps tradicionales que requieren internet permanente, **BeeKeep** funciona bajo la filosofía *Offline-First*. Permite registrar de manera ágil el estado de los apiarios, inspeccionar colmenas y guardar notas de voz, sincronizando toda la información de forma automática con la nube cuando el dispositivo recupera la señal.
 
 ---
 
 ## 🎯 Características Principales
 
-*   **Gestión de Apiarios y Lotes**: Visualización clara del inventario de terrenos, coordenadas GPS y el conteo de colmenas activas calculado en tiempo real.
+*   **Gestión de Apiarios**: Visualización clara del inventario de terrenos, coordenadas GPS y el conteo de colmenas activas calculado en tiempo real.
 *   **Arquitectura Offline-First**: Registro de inspecciones y movimientos en el campo 100% sin internet utilizando bases de datos locales y UUIDs para evitar conflictos de sincronización.
 *   **Identificación por Códigos QR**: Escaneo rápido de la colmena mediante la cámara del teléfono para abrir instantáneamente su historial médico y productivo.(**VERIFICAR**)
-*   **Historial de movimientos**: Registro de movimientos para rastrear cuándo y por qué una colmena fue trasladada de un lote a otro.
+*   **Historial de movimientos**: Registro de movimientos para rastrear cuándo y por qué una colmena fue trasladada de un apiario a otro.
 *   **Inspecciones Manos Libres**: Interfaz optimizada con botones de gran tamaño e integración de dictado por voz (Speech-to-Text) para operar cómodamente usando guantes de protección.
 
 ---
@@ -44,7 +44,7 @@ El proyecto está estructurado utilizando tecnologías modernas que garantizan p
 └── SÍ ──> [ Base de Datos Local ] ──(Sincronización)──> [ Nube (Firebase/Supabase) ]
 ```
 
-1. **Captura Local Inmediata**: Cualquier acción (crear un lote, registrar una inspección) se guarda primero en la base de datos interna del teléfono de forma instantánea.
+1. **Captura Local Inmediata**: Cualquier acción (crear un apiario, registrar una inspección) se guarda primero en la base de datos interna del teléfono de forma instantánea.
 2. **Uso de UUIDs**: Cada registro genera un código único universal en el teléfono. Esto evita que los datos choquen o se dupliquen cuando se suban a internet.
 3. **Sincronización en Segundo Plano**: Un servicio oculto de la app detecta cuando el teléfono recupera la señal (Wi-Fi o datos móviles) y sube los cambios pendientes a la base de datos en la nube sin interrumpir al usuario.(**VERIFICAR**)
 
@@ -55,25 +55,25 @@ El proyecto está estructurado utilizando tecnologías modernas que garantizan p
 El código de la aplicación se divide en tres capas principales para separar las responsabilidades:
 
 *   **Capas de Presentación (UI)**: Contiene las pantallas, botones gigantes, el lector de códigos QR y los controladores de la interfaz de usuario. No sabe cómo se guardan los datos, solo los muestra.
-*   **Capa de Dominio (Lógica)**: Define las reglas del negocio de la apicultura (por ejemplo: "una colmena no puede estar en dos lotes a la vez" o "calcular la cantidad de colmenas por apiario").
+*   **Capa de Dominio (Lógica)**: Define las reglas del negocio de la apicultura (por ejemplo: "una colmena no puede estar en dos apiarios a la vez" o "calcular la cantidad de colmenas por apiario").
 *   **Capa de Datos (Data)**: Se encarga de la conexión con el exterior. Maneja la base de datos local (SQLite/Hive) y la lógica de sincronización con las APIs o servicios de la nube (Firebase/Supabase).
 
 ## 🔄 Flujo de Datos Detallado (Casos de Uso)
-### Caso 1: Alta de un Nuevo Lote (Apiario) con GPS
+### Caso 1: Alta de un Nuevo Apiario con GPS
 
 Este flujo ocurre cuando el apicultor llega a un terreno nuevo y decide registrarlo como un punto de trabajo.
 Para entender cómo se comporta la aplicación, a continuación se describen los tres flujos de datos más importantes del sistema, cubriendo el ciclo de vida de la información desde el campo hasta la nube.
 ```text
-[Pantalla "Nuevo Lote"] ──(1. Clic Guardar)──> [Servicio GPS del Celular]
+[Pantalla "Nuevo Apiario"] ──(1. Clic Guardar)──> [Servicio GPS del Celular]
 │
 (2. Obtiene Coordenadas)
 │
 ▼
 [Nube (Firebase/Supabase)] <──(4. Segundo Plano)── [Base de Datos Local](Disponible en la Web)(ID: UUID generado)
 ```
-1. **Entrada de datos**: El usuario escribe el nombre (ej. "Lote Las Acacias") y presiona el botón "Registrar Ubicación".
+1. **Entrada de datos**: El usuario escribe el nombre (ej. "Apiario Las Acacias") y presiona el botón "Registrar Ubicación".
 2. **Captura de Hardware**: La app solicita al chip GPS del teléfono las coordenadas de latitud y longitud exactas.
-3. **Escritura Local (Instantánea)**: El sistema genera un `UUID` único y guarda el registro en la tabla `Apiarios` de la base de datos local. La interfaz se actualiza de inmediato mostrando el lote con `0` colmenas.
+3. **Escritura Local (Instantánea)**: El sistema genera un `UUID` único y guarda el registro en la tabla `Apiarios` de la base de datos local. La interfaz se actualiza de inmediato mostrando el apiario con `0` colmenas.
 4. **Sincronización (Asíncrona)**: Si hay señal, el gestor de base de datos envía el registro a la nube. Si no, espera pacientemente en el teléfono.
 
 ---
@@ -163,7 +163,7 @@ erDiagram
 
 ### 🔑 Explicación de las Relaciones
 
-*   **APIARIOS a COLMENAS (Uno a Muchos - `||--o{`)**: Un lote o apiario puede tener muchas colmenas trabajando en él al mismo tiempo, pero una colmena en un momento específico solo puede pertenecer a un único apiario.
+*   **APIARIOS a COLMENAS (Uno a Muchos - `||--o{`)**: Un apiario puede tener muchas colmenas trabajando en él al mismo tiempo, pero una colmena en un momento específico solo puede pertenecer a un único apiario.
 *   **COLMENAS a INSPECCIONES (Uno a Muchos - `||--o{`)**: Una colmena va a ser revisada muchas veces a lo largo de su vida. Cada revisión genera una nueva fila en la tabla de inspecciones conectada a esa colmena a través de su ID.
 *   **COLMENAS a HISTORIAL\_MOVIMIENTOS (Uno a Muchos - `||--o{`)**: Sirve para auditar el camino de la colmena. Cada vez que una colmena viaja de un apiario a otro, se guarda el registro de dónde venía y a dónde fue, permitiendo reconstruir su ruta en el mapa.
 ---

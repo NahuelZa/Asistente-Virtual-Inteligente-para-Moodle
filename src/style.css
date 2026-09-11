@@ -1,91 +1,102 @@
 @import '@awesome.me/webawesome/dist/styles/webawesome.css';
 
 :root {
-  --sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-}
-
-* {
-  box-sizing: border-box;
+  /* Web Awesome Brand Theming & Tokens */
+  --wa-color-brand: #FAB81E;
+  --wa-color-brand-fill-loud: #FAB81E;
+  --wa-color-brand-on-loud: #18181B;
+  --wa-color-brand-border-loud: #FAB81E;
+  --wa-color-focus: #FAB81E;
+  --wa-form-control-activated-color: #FAB81E;
+  --wa-form-control-border-radius: var(--wa-border-radius-m);
+  --wa-form-control-required-content-color: #DC2626;
 }
 
 html,
-body {
-  min-height: 100%;
-  padding: 0;
+body,
+#app-container {
+  min-height: 100vh;
   margin: 0;
-  font-family: var(--sans);
-  background-color: var(--wa-color-surface-default, #f9fafb);
-  color: var(--wa-color-text-normal, #374151);
+  padding: 0;
+  width: 100%;
 }
 
 wa-page::part(main-content) {
   padding: 0;
 }
 
-.app-header {
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  max-width: 640px;
-  margin: 0 auto;
+wa-page {
+  min-height: 100vh;
   width: 100%;
 }
 
-.main-content {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 24px 16px;
+/* Header & View Switcher */
+.view-header {
+  background-color: var(--wa-color-surface-lowered, #EAEBED);
+  border-bottom: 1px solid var(--wa-color-surface-border, #DFE2E6);
+  padding: var(--wa-space-l) var(--wa-space-l) 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--wa-space-m);
+}
+
+.view-title {
+  margin: 0;
+  font-size: var(--wa-font-size-xl, 1.25rem);
+  font-weight: var(--wa-font-weight-bold, 700);
+}
+
+.view-switcher-tabs {
+  --indicator-color: var(--wa-color-brand-fill-loud);
+  --track-color: transparent;
   width: 100%;
 }
 
-.app-header h2 {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--wa-color-text-normal, #111827);
+.view-switcher-tabs wa-tab {
+  font-weight: var(--wa-font-weight-semibold, 600);
 }
 
-.app-header wa-icon {
-  color: var(--wa-color-brand-fill-loud, #f59e0b);
+.view-switcher-tabs wa-tab wa-icon {
+  margin-right: var(--wa-space-xs, 6px);
 }
 
-.card {
-  width: 100%;
-}
-
-.card h3 {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.inspection-form {
+/* View Content & Form Layout */
+.view-body {
+  padding: var(--wa-space-xl) var(--wa-space-l);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  flex: 1;
 }
 
-pre#localOutput {
-  background-color: var(--wa-color-surface-lowered, #f3f4f6);
-  border: 1px solid var(--wa-color-surface-border, #e5e7eb);
-  border-radius: var(--wa-border-radius-m, 8px);
-  padding: 14px;
-  font-family: var(--mono), monospace;
-  font-size: 0.9rem;
-  color: var(--wa-color-text-normal, #111827);
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
-  margin: 0;
+apiario-view,
+colmena-view {
+  width: 100%;
+  max-width: 540px;
+}
+
+.beekeep-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wa-space-l);
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.field-label {
+  font-size: var(--wa-font-size-s, 0.92rem);
+  font-weight: var(--wa-font-weight-semibold, 600);
+}
+
+.form-actions {
+  margin-top: var(--wa-space-xs);
+  width: 100%;
+}
+
+.beekeep-btn-submit {
+  width: 100%;
 }
